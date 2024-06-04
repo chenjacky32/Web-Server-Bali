@@ -1,7 +1,7 @@
 import prisma from '../../db/prisma.js';
 import { validateToken } from '../../middleware/Jwt-Token.js';
 
-const GetUserLogin = async (req, res) => {
+const GetAllDest = async (req, res) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -26,28 +26,19 @@ const GetUserLogin = async (req, res) => {
   }
 
   try {
-    const userData = await prisma.users.findMany({
-      where: {
-        user_id: decoded.userId,
-      },
-    });
-    if (userData.length === 0) {
-      const responseData = res.response({
-        status: 'fail',
-        message: 'User not found',
-      });
-      responseData.code(404);
-      return responseData;
-    }
-
-    const user = userData[0];
+    const GetDestination = await prisma.destination.findMany();
+    const Destination = GetDestination.map((dest) => ({
+      id: dest.dest_id,
+      name: dest.name_dest,
+      description: dest.description,
+      img: dest.img,
+      location: dest.location,
+    }));
     const responseData = res.response({
-      status: 'success',
-      message: 'User retrieved',
+      status: 'Success',
+      message: 'Get All Destination success',
       data: {
-        id: user.user_id,
-        name: user.name,
-        email: user.email,
+        Destination,
       },
     });
     responseData.code(200);
@@ -62,4 +53,5 @@ const GetUserLogin = async (req, res) => {
     return responseData;
   }
 };
-export default GetUserLogin;
+
+export default GetAllDest;

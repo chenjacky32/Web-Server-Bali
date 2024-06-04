@@ -65,7 +65,7 @@ const RegisterUser = async (req, res) => {
     console.log(error.message);
     const responseData = res.response({
       status: 'fail',
-      message: 'Fail Created User',
+      message: 'internal server error',
     });
     responseData.code(500);
     return responseData;

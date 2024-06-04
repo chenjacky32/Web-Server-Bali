@@ -1,7 +1,7 @@
-import { validateToken } from '../../middleware/Jwt-Token.js';
 import prisma from '../../db/prisma.js';
+import { validateToken } from '../../middleware/Jwt-Token.js';
 
-const DeleteDestById = async (req, res) => {
+const GetDestById = async (req, res) => {
   const { id } = req.params;
   const { authorization } = req.headers;
 
@@ -32,24 +32,22 @@ const DeleteDestById = async (req, res) => {
         dest_id: id,
       },
     });
-    if (userData.length > 0 && userData[0].dest_id === id) {
-      // const QueryDelete = `DELETE FROM destination WHERE dest_id = ?`;
-      // await query(QueryDelete, [id]);
-      await prisma.destination.deleteMany({
-        where: {
-          dest_id: id,
-        },
-      });
+    if (userData.length > 0) {
       const responseData = res.response({
         status: 'success',
-        message: 'Destination has been deleted',
+        message: 'Get Destinations by id success',
         data: {
-          dest_id: userData[0].dest_id,
+          id: userData[0].dest_id,
+          name: userData[0].name_dest,
+          description: userData[0].description,
+          img: userData[0].img,
+          location: userData[0].location,
         },
       });
       responseData.code(200);
       return responseData;
     }
+
     const responseData = res.response({
       status: 'fail',
       message: 'Destination not found',
@@ -58,13 +56,13 @@ const DeleteDestById = async (req, res) => {
     return responseData;
   } catch (error) {
     console.error(error.message);
-    const response = res.response({
+    const responseData = res.response({
       status: 'fail',
       message: 'internal server error',
     });
-    response.code(500);
-    return response;
+    responseData.code(500);
+    return responseData;
   }
 };
 
-export default DeleteDestById;
+export default GetDestById;
