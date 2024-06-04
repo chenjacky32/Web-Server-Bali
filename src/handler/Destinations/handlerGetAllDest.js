@@ -2,29 +2,6 @@ import prisma from '../../db/prisma.js';
 import { validateToken } from '../../middleware/Jwt-Token.js';
 
 const GetAllDest = async (req, res) => {
-  const { authorization } = req.headers;
-
-  if (!authorization) {
-    const responseData = res.response({
-      status: 'fail',
-      message: 'missing authentication token',
-    });
-    responseData.code(401);
-    return responseData;
-  }
-
-  const token = authorization.split(' ')[1];
-  const decoded = validateToken(token);
-
-  if (!decoded) {
-    const responseData = res.response({
-      status: 'fail',
-      message: 'invalid authentication token or token Expired',
-    });
-    responseData.code(401);
-    return responseData;
-  }
-
   try {
     const GetDestination = await prisma.destination.findMany();
     const Destination = GetDestination.map((dest) => ({
