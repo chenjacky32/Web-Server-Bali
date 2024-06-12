@@ -44,7 +44,11 @@ const LoginUser = async (req, res) => {
       .update(password)
       .digest('hex');
 
-    if (hashedPassword !== user.password) {
+    // remove prefix \x from user.password
+    const userPassword = user.password.replace(/^\\x/, '');
+    if (hashedPassword !== userPassword) {
+      console.log(hashedPassword);
+      console.log(user.password);
       const response = res.response({
         status: 'fail',
         message: 'Invalid email or password',

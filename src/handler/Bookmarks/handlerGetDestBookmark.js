@@ -1,8 +1,7 @@
-import { validateToken } from '../../middleware/Jwt-Token.js';
 import prisma from '../../db/prisma.js';
+import { validateToken } from '../../middleware/Jwt-Token.js';
 
-const DeleteDestById = async (req, res) => {
-  const { id } = req.params;
+const GetDestBookmark = async (req, res) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -27,32 +26,38 @@ const DeleteDestById = async (req, res) => {
   }
 
   try {
-    const userData = await prisma.destination.findMany({
+    const bookmarks = await prisma.bookmark_detail.findMany({
       where: {
-        dest_id: id,
+        user_id: decoded.userId,
+        isBookmark: true,
+      },
+      include: {
+        users: true,
+        destination: true,
       },
     });
-    if (userData.length > 0 && userData[0].dest_id === id) {
-      await prisma.destination.deleteMany({
-        where: {
-          dest_id: id,
-        },
-      });
-      const responseData = res.response({
-        status: 'success',
-        message: 'Destinations has been deleted',
-        data: {
-          id: userData[0].dest_id,
-        },
-      });
-      responseData.code(200);
-      return responseData;
-    }
+
+    // console.log(bookmarks);
+
+    const bookmarkData = bookmarks.map((bookmark) => ({
+      id: bookmark.id,
+      user_id: bookmark.user_id,
+      name: bookmark.users.name,
+      dest_id: bookmark.dest_id,
+      dest_name: bookmark.destination.name_dest,
+      isBookmark: bookmark.isBookmark,
+    }));
+
+    console.log(bookmarkData);
+
     const responseData = res.response({
-      status: 'fail',
-      message: 'Destinations not found',
+      status: 'success',
+      message: 'Destinations retrieved',
+      data: {
+        Bookmarks: bookmarkData,
+      },
     });
-    responseData.code(404);
+    responseData.code(200);
     return responseData;
   } catch (error) {
     console.error(error.message);
@@ -65,4 +70,4 @@ const DeleteDestById = async (req, res) => {
   }
 };
 
-export default DeleteDestById;
+export default GetDestBookmark;
