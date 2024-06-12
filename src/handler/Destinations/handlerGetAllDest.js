@@ -13,9 +13,9 @@ const GetAllDest = async (req, res) => {
     }));
     const responseData = res.response({
       status: 'Success',
-      message: 'Get All Destination success',
+      message: 'Get All Destinations success',
       data: {
-        Destination,
+        destinations: Destination,
       },
     });
     responseData.code(200);

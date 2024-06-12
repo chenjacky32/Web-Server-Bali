@@ -47,7 +47,7 @@ const AddDestination = async (req, res) => {
     if (Data_Dest.length > 0) {
       const response = res.response({
         status: 'fail',
-        message: 'Destination Already Exist',
+        message: 'Destinations Already Exist',
       });
       response.code(400);
       return response;
@@ -65,7 +65,7 @@ const AddDestination = async (req, res) => {
 
     const response = res.response({
       status: 'success',
-      message: 'Destination Created successfully',
+      message: 'Destinations Created successfully',
       data: {
         id,
         name,

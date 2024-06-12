@@ -28,7 +28,7 @@ const GetDestById = async (req, res) => {
 
     const responseData = res.response({
       status: 'fail',
-      message: 'Destination not found',
+      message: 'Destinations not found',
     });
     responseData.code(404);
     return responseData;
