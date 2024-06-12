@@ -1,26 +1,22 @@
 import prisma from '../../db/prisma.js';
-import { validateToken } from '../../middleware/Jwt-Token.js';
+import CountAvgRating from '../../middleware/Count-Avg-Rating.js';
 
 const GetDestById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const userData = await prisma.destination.findMany({
+    const userData = await prisma.destination.findUnique({
       where: {
         dest_id: id,
       },
     });
-    if (userData.length > 0) {
+
+    if (userData) {
+      const destinationWithRating = await CountAvgRating(userData);
       const responseData = res.response({
-        status: 'success',
+        status: 'Success',
         message: 'Get Destinations by id success',
-        data: {
-          id: userData[0].dest_id,
-          name: userData[0].name_dest,
-          description: userData[0].description,
-          img: userData[0].img,
-          location: userData[0].location,
-        },
+        data: destinationWithRating,
       });
       responseData.code(200);
       return responseData;

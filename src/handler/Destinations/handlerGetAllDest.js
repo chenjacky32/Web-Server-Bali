@@ -1,21 +1,19 @@
 import prisma from '../../db/prisma.js';
-import { validateToken } from '../../middleware/Jwt-Token.js';
+import CountAvgRating from '../../middleware/Count-Avg-Rating.js';
 
 const GetAllDest = async (req, res) => {
   try {
     const GetDestination = await prisma.destination.findMany();
-    const Destination = GetDestination.map((dest) => ({
-      id: dest.dest_id,
-      name: dest.name_dest,
-      description: dest.description,
-      img: dest.img,
-      location: dest.location,
-    }));
+
+    const DestinationRating = await Promise.all(
+      GetDestination.map(CountAvgRating),
+    );
+
     const responseData = res.response({
       status: 'Success',
       message: 'Get All Destinations success',
       data: {
-        destinations: Destination,
+        destinations: DestinationRating,
       },
     });
     responseData.code(200);
